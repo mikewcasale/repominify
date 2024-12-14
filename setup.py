@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name="src",
-    version="0.1.2",
+    version="0.1.3",
     author="Mike Casale",
     author_email="mike@casale.xyz",
     description="A Python package that optimizes codebase representations for LLMs by generating compact, context-rich summaries",
