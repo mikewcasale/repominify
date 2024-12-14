@@ -194,3 +194,4 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+release_notes.md
