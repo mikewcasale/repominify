@@ -2,7 +2,7 @@
 repominify - Optimize codebase representations for LLMs
 """
 
-__version__ = "0.1.3"
+__version__ = "0.1.5"
 __author__ = "Mike Casale"
 __email__ = "mike@casale.xyz"
 

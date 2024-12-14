@@ -2,19 +2,23 @@ from setuptools import setup, find_namespace_packages
 import os
 import re
 
+
 def get_version():
     init_path = os.path.join("repominify", "__init__.py")
     try:
         with open(init_path, "r") as f:
             content = f.read()
-            version_match = re.search(r'^__version__ = ["\']([^"\']*)["\']', content, re.M)
+            version_match = re.search(
+                r'^__version__ = ["\']([^"\']*)["\']', content, re.M
+            )
             if version_match:
                 return version_match.group(1)
     except FileNotFoundError:
         pass
-    
+
     # Fallback to hardcoded version if file not found
-    return "0.1.3"
+    return "0.1.5"
+
 
 setup(
     name="repominify",

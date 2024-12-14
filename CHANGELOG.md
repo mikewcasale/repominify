@@ -5,12 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2024-12-14
+## [0.1.5] - 2024-12-14
 
-### Changed
-- Major version bump to reflect stable package structure
-- Renamed src directory to repominify for better package organization
-- Updated package configuration to match new directory structure
+### Added
+- Enhanced code context extraction:
+  - Function and method signatures with full parameter lists
+  - Complete docstrings with parameter descriptions
+  - Constants and their values
+  - Environment variables and configurations
+  - Module-level documentation
+  - Import relationships
+  - Class hierarchies and dependencies
+- Improved text representation format for better LLM context
+- More detailed output file documentation
+
+### Fixed
+- File count statistics in output file comparison
+- More accurate comparison between input and output files
+
+## [0.1.4] - 2024-12-14
+
+### Fixed
+- CLI entry point path to use correct module location
+- Package structure for proper imports
 
 ## [0.1.3] - 2024-12-14
 
@@ -51,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured project to use src/ directory layout
 - Updated package metadata and documentation
 
-[1.3.0]: https://github.com/mikewcasale/repominify/compare/v0.1.3...v1.3.0
+[0.1.5]: https://github.com/mikewcasale/repominify/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/mikewcasale/repominify/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/mikewcasale/repominify/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/mikewcasale/repominify/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/mikewcasale/repominify/compare/v0.1.0...v0.1.1

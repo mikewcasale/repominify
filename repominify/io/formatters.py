@@ -84,7 +84,21 @@ class GraphFormatter:
                     for imp in sorted(imports):
                         text_parts.append(f"- {imp}")
 
-                # List classes
+                # List constants
+                constants = [
+                    n
+                    for n in graph.neighbors(node)
+                    if graph.nodes[n].get("type") == "constant"
+                ]
+                if constants:
+                    text_parts.append("\nConstants:")
+                    for const in sorted(constants):
+                        const_data = graph.nodes[const]
+                        text_parts.append(
+                            f"- {const.split('.')[-1]}: {const_data.get('value', '')}"
+                        )
+
+                # List classes with signatures and docstrings
                 classes = [
                     n
                     for n in graph.neighbors(node)
@@ -93,9 +107,14 @@ class GraphFormatter:
                 if classes:
                     text_parts.append("\nClasses:")
                     for class_name in sorted(classes):
-                        text_parts.append(f"- {class_name.split('.')[-1]}")
+                        class_data = graph.nodes[class_name]
+                        text_parts.append(
+                            f"\n{class_data.get('signature', class_name.split('.')[-1])}"
+                        )
+                        if "docstring" in class_data:
+                            text_parts.append(f"'''\n{class_data['docstring']}\n'''")
 
-                # List functions
+                # List functions with signatures and docstrings
                 functions = [
                     n
                     for n in graph.neighbors(node)
@@ -104,7 +123,22 @@ class GraphFormatter:
                 if functions:
                     text_parts.append("\nFunctions:")
                     for func_name in sorted(functions):
-                        text_parts.append(f"- {func_name.split('.')[-1]}")
+                        func_data = graph.nodes[func_name]
+                        text_parts.append(
+                            f"\n{func_data.get('signature', func_name.split('.')[-1])}"
+                        )
+                        if "docstring" in func_data:
+                            text_parts.append(f"'''\n{func_data['docstring']}\n'''")
+
+        # Add environment variables if present
+        env_vars = [n for n, d in graph.nodes(data=True) if d.get("type") == "env_var"]
+        if env_vars:
+            text_parts.append("\n## Environment Variables")
+            for var in sorted(env_vars):
+                var_data = graph.nodes[var]
+                text_parts.append(
+                    f"- {var.split('.')[-1]}: {var_data.get('value', '')}"
+                )
 
         result = "\n".join(text_parts)
         self.stats["total_chars"] = len(result)

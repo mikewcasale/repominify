@@ -23,6 +23,8 @@ repominify helps you provide detailed context about your codebase to LLMs withou
 - **Code Analysis**
   - Parses and analyzes code structure
   - Extracts imports, classes, and functions
+  - Captures function signatures and docstrings
+  - Identifies and extracts constants and environment variables
   - Builds dependency graphs
   - Performance optimized for large codebases
 
@@ -31,6 +33,15 @@ repominify helps you provide detailed context about your codebase to LLMs withou
   - JSON for web-based tools
   - YAML for statistics
   - Text for human-readable analysis
+
+- **Rich Code Context**
+  - Complete function/method signatures
+  - Full docstrings with parameter descriptions
+  - Constants and their values
+  - Environment variables and configurations
+  - Module-level documentation
+  - Import relationships
+  - Class hierarchies and dependencies
 
 - **Size Optimization**
   - Generates minified code structure representation
@@ -112,26 +123,41 @@ if ensure_dependencies():
 Analysis Complete!
 📊 File Stats:
 ────────────────
-  Total Files: 18
-  Total Chars: 1,091,801
- Total Tokens: 354,159
-       Output: repomix-output.txt
+  Total Files: 29
+  Total Chars: 143,887
+ Total Tokens: 14,752
+       Output: input.txt
      Security: ✔ No suspicious files detected
 
 📊 File Stats:
 ────────────────
-  Total Files: 18
-  Total Chars: 245,123
- Total Tokens: 89,456
+  Total Files: 29
+  Total Chars: 26,254
+ Total Tokens: 3,254
        Output: code_graph.txt
      Security: ✔ No suspicious files detected
 
 📈 Comparison:
 ────────────────
- Char Reduction: 77.5%
-Token Reduction: 74.7%
+ Char Reduction: 81.8%
+Token Reduction: 77.9%
 Security Notes: ✔ No issues found
 ```
+
+## Output Files
+
+When you run repominify, it generates several files in your output directory:
+
+- `code_graph.graphml`: Graph representation in GraphML format
+- `code_graph.json`: Graph data in JSON format for web visualization
+- `graph_statistics.yaml`: Statistical analysis of the codebase
+- `code_graph.txt`: Human-readable text representation including:
+  - Module structure and dependencies
+  - Function signatures and docstrings
+  - Class definitions and hierarchies
+  - Constants and their values
+  - Environment variables
+  - Import relationships
 
 ## Project Structure
 
@@ -159,15 +185,6 @@ repominify/
 ├── LICENSE            # MIT License
 └── README.md          # This file
 ```
-
-## Output Files
-
-When you run repominify, it generates several files in your output directory:
-
-- `code_graph.graphml`: Graph representation in GraphML format
-- `code_graph.json`: Graph data in JSON format for web visualization
-- `graph_statistics.yaml`: Statistical analysis of the codebase
-- `code_graph.txt`: Human-readable text representation
 
 ## Performance
 
