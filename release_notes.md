@@ -1,14 +1,14 @@
 # repominify v0.1.3
 
-Bug fix release to correct package name.
+Release to update package organization.
 
-## Fixed
-- Fixed incorrect package name in setup.py
+## Changed
+- Package name in setup.py set to 'src' for proper module organization
 
 ## Installation
 
 ```bash
-pip install repominify==0.1.3
+pip install src==0.1.3
 ```
 
 For full details, see the [CHANGELOG](https://github.com/mikewcasale/repominify/blob/main/CHANGELOG.md). 

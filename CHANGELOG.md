@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.3] - 2024-12-14
 
-### Fixed
-- Fixed incorrect package name in setup.py
+### Changed
+- Package name in setup.py set to 'src' for proper module organization
 
 ## [0.1.2] - 2024-12-14
 
