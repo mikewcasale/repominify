@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 setup(
     name="repominify",
@@ -10,7 +10,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/mikewcasale/repominify",
     package_dir={"": "src"},
-    packages=find_packages(where="src", exclude=["tests", "tests.*"]),
+    packages=find_namespace_packages(where="src", include=["*"]),
     python_requires=">=3.7",
     install_requires=[
         "networkx>=2.6.0",
@@ -18,7 +18,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "repominify=cli:main",
+            "repominify=core.cli:main",
         ],
     },
     classifiers=[
