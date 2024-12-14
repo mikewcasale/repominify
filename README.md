@@ -4,6 +4,8 @@ A Python package that optimizes codebase representations for Large Language Mode
 
 [![PyPI version](https://badge.fury.io/py/repominify.svg)](https://badge.fury.io/py/repominify)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/repominify)](https://pypi.org/project/repominify/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/repominify)](https://pypi.org/project/repominify/)
 
 ## Overview
 
