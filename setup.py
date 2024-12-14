@@ -33,7 +33,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "repominify=repominify.core.cli:main",
+            "repominify=repominify.cli:main",
         ],
     },
     package_data={
