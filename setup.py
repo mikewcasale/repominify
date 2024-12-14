@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name="repominify",
-    version="0.1.1",
+    version="0.1.2",
     author="Mike Casale",
     author_email="mike@casale.xyz",
     description="A Python package that optimizes codebase representations for LLMs by generating compact, context-rich summaries",
@@ -21,6 +21,10 @@ setup(
             "repominify=core.cli:main",
         ],
     },
+    package_data={
+        "": ["py.typed"],
+    },
+    zip_safe=False,
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
