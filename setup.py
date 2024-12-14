@@ -14,7 +14,7 @@ def get_version():
         pass
     
     # Fallback to hardcoded version if file not found
-    return "0.1.3"
+    return "0.1.4"
 
 setup(
     name="repominify",
