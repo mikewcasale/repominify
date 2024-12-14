@@ -1,7 +1,7 @@
 from setuptools import setup, find_namespace_packages
 
 setup(
-    name="repominify",
+    name="src",
     version="0.1.2",
     author="Mike Casale",
     author_email="mike@casale.xyz",
