@@ -1,16 +1,27 @@
 from setuptools import setup, find_namespace_packages
+import os
+import re
+
+def get_version():
+    init_path = os.path.join("repominify", "__init__.py")
+    with open(init_path, "r") as f:
+        content = f.read()
+    version_match = re.search(r'^__version__ = ["\']([^"\']*)["\']', content, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Cannot find version string.")
 
 setup(
-    name="src",
-    version="0.1.3",
+    name="repominify",
+    version=get_version(),
     author="Mike Casale",
     author_email="mike@casale.xyz",
     description="A Python package that optimizes codebase representations for LLMs by generating compact, context-rich summaries",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/mikewcasale/repominify",
-    package_dir={"": "src"},
-    packages=find_namespace_packages(where="src", include=["*"]),
+    package_dir={"": "repominify"},
+    packages=find_namespace_packages(where="repominify", include=["*"]),
     python_requires=">=3.7",
     install_requires=[
         "networkx>=2.6.0",
