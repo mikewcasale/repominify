@@ -3,13 +3,23 @@ import os
 import re
 
 def get_version():
-    init_path = os.path.join("repominify", "__init__.py")
-    with open(init_path, "r") as f:
-        content = f.read()
-    version_match = re.search(r'^__version__ = ["\']([^"\']*)["\']', content, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Cannot find version string.")
+    # Try both the source directory and the package directory
+    possible_paths = [
+        os.path.join("repominify", "__init__.py"),
+        os.path.join("repominify", "repominify", "__init__.py"),
+    ]
+    
+    for init_path in possible_paths:
+        try:
+            with open(init_path, "r") as f:
+                content = f.read()
+                version_match = re.search(r'^__version__ = ["\']([^"\']*)["\']', content, re.M)
+                if version_match:
+                    return version_match.group(1)
+        except FileNotFoundError:
+            continue
+    
+    raise RuntimeError("Cannot find version string in __init__.py")
 
 setup(
     name="repominify",
