@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7] - 2024-12-16
+
+### Added
+- Blog article detailing project impact and strategic value
+- Medium publication script for automated content sharing
+- Comprehensive visualization generation scripts
+- Architecture diagram generation using graphviz
+
+### Changed
+- Enhanced documentation with practical examples
+- Improved code samples in documentation
+- Updated project structure documentation
+
+### Fixed
+- Code formatting in documentation
+- Image path references in blog content
+- Version number consistency
+
 ## [0.1.6] - 2024-12-15
 
 ### Changed
@@ -86,6 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured project to use src/ directory layout
 - Updated package metadata and documentation
 
+[0.1.7]: https://github.com/mikewcasale/repominify/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/mikewcasale/repominify/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/mikewcasale/repominify/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/mikewcasale/repominify/compare/v0.1.3...v0.1.4

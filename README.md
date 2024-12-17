@@ -30,7 +30,12 @@ repominify/
 │   └── __init__.py    # Package initialization
 ├── tests/             # Test suite
 │   ├── test_end2end.py # End-to-end tests
+│   ├── benchmarks.py   # Performance benchmarking
+│   ├── generate_visualizations.py # Visualization generation
+│   ├── generate_architecture.py   # Architecture diagrams
 │   └── data/          # Test data files
+├── scripts/           # Utility scripts
+│   └── publish_medium.py # Medium publication tool
 ├── setup.py          # Package configuration
 ├── LICENSE           # MIT License
 └── README.md         # This file

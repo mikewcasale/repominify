@@ -6,7 +6,7 @@ Email: mike@casale.xyz
 GitHub: https://github.com/mikewcasale
 """
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 __author__ = "Mike Casale"
 __email__ = "mike@casale.xyz"
 
