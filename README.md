@@ -11,7 +11,30 @@ A Python package that optimizes codebase representations for Large Language Mode
 
 repominify helps you provide detailed context about your codebase to LLMs without consuming excessive space in their context windows. It processes Repomix output to create optimized representations that maintain critical structural information while significantly reducing token usage. This enables more efficient and effective code-related conversations with AI models by maximizing the amount of useful context that can fit within token limits.
 
-⚠️ Warning: repominify performs deep code analysis which can be resource-intensive for large codebases. Please start with a small subset of your code to understand the process and resource requirements.
+## Project Structure
+
+```
+repominify/
+├── repominify/         # Source code
+│   ├── graph.py        # Graph building and analysis
+│   ├── parser.py       # Repomix file parsing
+│   ├── types.py        # Core types and data structures
+│   ├── exporters.py    # Graph export functionality
+│   ├── formatters.py   # Text representation formatting
+│   ├── dependencies.py # Dependency management
+│   ├── logging.py      # Logging configuration
+│   ├── stats.py        # Statistics and comparison
+│   ├── constants.py    # Shared constants
+│   ├── exceptions.py   # Custom exceptions
+│   ├── cli.py         # Command-line interface
+│   └── __init__.py    # Package initialization
+├── tests/             # Test suite
+│   ├── test_end2end.py # End-to-end tests
+│   └── data/          # Test data files
+├── setup.py          # Package configuration
+├── LICENSE           # MIT License
+└── README.md         # This file
+```
 
 ## Features
 
@@ -159,31 +182,6 @@ When you run repominify, it generates several files in your output directory:
   - Environment variables
   - Import relationships
 
-## Project Structure
-
-```
-repominify/
-├── repominify/         # Source code
-│   ├── graph.py        # Graph building and analysis
-│   ├── parser.py       # Repomix file parsing
-│   ├── types.py        # Core types and data structures
-│   ├── exporters.py    # Graph export functionality
-│   ├── formatters.py   # Text representation formatting
-│   ├── dependencies.py # Dependency management
-│   ├── logging.py      # Logging configuration
-│   ├── stats.py        # Statistics and comparison
-│   ├── constants.py    # Shared constants
-│   ├── exceptions.py   # Custom exceptions
-│   ├── cli.py         # Command-line interface
-│   └── __init__.py    # Package initialization
-├── tests/             # Test suite
-│   ├── test_end2end.py # End-to-end tests
-│   └── data/          # Test data files
-├── setup.py          # Package configuration
-├── LICENSE           # MIT License
-└── README.md         # This file
-```
-
 ## Code Style
 
 The project follows these coding standards for consistency and maintainability:
@@ -236,10 +234,4 @@ This project makes use of or was influenced by several excellent open source pro
 - [NetworkX](https://networkx.org/) - Core graph algorithms and data structures
 - [PyYAML](https://pyyaml.org/) - YAML file handling
 - [GraphRAG Accelerator](https://github.com/Azure-Samples/graphrag-accelerator) - Graph-based code analysis patterns and implementation concepts
-
-## How to Get Help
-
-- For bugs and feature requests, please [open an issue](https://github.com/mikewcasale/repominify/issues)
-- For usage questions, please [start a discussion](https://github.com/mikewcasale/repominify/discussions)
-- For security concerns, please email security@casale.xyz directly
 
