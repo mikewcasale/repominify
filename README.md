@@ -163,46 +163,37 @@ When you run repominify, it generates several files in your output directory:
 
 ```
 repominify/
-├── src/                 # Source code
-│   ├── core/           # Core functionality
-│   │   ├── graph.py    # Graph building and analysis
-│   │   ├── parser.py   # Repomix file parsing
-│   │   └── types.py    # Shared types and data structures
-│   ├── io/             # Input/Output operations
-│   │   ├── exporters.py  # Graph export functionality
-│   │   └── formatters.py # Text representation formatting
-│   ├── utils/          # Utility modules
-│   │   ├── dependency_checker.py  # Dependency management
-│   │   ├── logging.py   # Logging configuration
-│   │   └── stats.py     # Statistics and comparison
-│   ├── cli.py          # Command-line interface
-│   └── __init__.py     # Package initialization
-├── tests/              # Test suite
-│   ├── test_end2end.py  # End-to-end tests
+├── repominify/         # Source code
+│   ├── graph.py        # Graph building and analysis
+│   ├── parser.py       # Repomix file parsing
+│   ├── types.py        # Core types and data structures
+│   ├── exporters.py    # Graph export functionality
+│   ├── formatters.py   # Text representation formatting
+│   ├── dependencies.py # Dependency management
+│   ├── logging.py      # Logging configuration
+│   ├── stats.py        # Statistics and comparison
+│   ├── constants.py    # Shared constants
+│   ├── exceptions.py   # Custom exceptions
+│   ├── cli.py         # Command-line interface
+│   └── __init__.py    # Package initialization
+├── tests/             # Test suite
+│   ├── test_end2end.py # End-to-end tests
 │   └── data/          # Test data files
-├── setup.py           # Package configuration
-├── pyproject.toml     # Build system requirements
-├── LICENSE            # MIT License
-└── README.md          # This file
+├── setup.py          # Package configuration
+├── LICENSE           # MIT License
+└── README.md         # This file
 ```
 
-## Performance
+## Code Style
 
-repominify is designed to handle large codebases efficiently:
+The project follows these coding standards for consistency and maintainability:
 
-- Memory usage scales linearly with codebase size
-- File I/O is buffered for efficiency
-- Graph operations are optimized
-- Performance statistics available in debug mode
-
-## Error Handling
-
-The package provides detailed error messages and proper error boundaries:
-
-- Dependency errors (Node.js, npm, Repomix)
-- File parsing errors
-- Graph building errors
-- Export errors
+- Comprehensive docstrings with Examples sections for all public APIs
+- Type hints for all functions, methods, and class attributes
+- Custom exceptions for proper error handling and reporting
+- Clear separation of concerns between modules
+- Consistent code formatting and naming conventions
+- Detailed logging with configurable debug support
 
 ## Development
 
@@ -224,7 +215,7 @@ pytest tests/
 
 Contributions are welcome! Please feel free to submit a Pull Request. By contributing to this project, you agree to abide by its terms.
 
-This project has adopted the [Python Style Guide](STYLEGUIDE.md) for consistency and maintainability.
+Please ensure your code follows the project's coding standards, including proper docstrings, type hints, and error handling.
 
 ## Authors
 
@@ -246,17 +237,9 @@ This project makes use of or was influenced by several excellent open source pro
 - [PyYAML](https://pyyaml.org/) - YAML file handling
 - [GraphRAG Accelerator](https://github.com/Azure-Samples/graphrag-accelerator) - Graph-based code analysis patterns and implementation concepts
 
-## Disclaimer
-
-This project is not an officially supported product. It is provided as-is, without warranty or support. Users should evaluate its suitability for their use case and understand the implications of deep code analysis on their systems.
-
 ## How to Get Help
 
 - For bugs and feature requests, please [open an issue](https://github.com/mikewcasale/repominify/issues)
 - For usage questions, please [start a discussion](https://github.com/mikewcasale/repominify/discussions)
 - For security concerns, please email security@casale.xyz directly
-
-## Trademarks
-
-Any trademarks or registered trademarks mentioned in this project are the property of their respective owners.
 

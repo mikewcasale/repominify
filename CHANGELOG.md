@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2024-12-15
+
+### Changed
+- Improved code quality and documentation:
+  - Added comprehensive docstrings with Examples sections
+  - Added proper type hints for all functions and classes
+  - Added Raises sections in docstrings for error handling
+  - Improved error handling with custom exceptions
+  - Enhanced code organization and module structure
+- Updated project structure to use flat directory layout
+- Improved README with current project structure and standards
+
+### Fixed
+- Function and method signatures in docstrings
+- Error handling in dependency management
+- Type hints in graph building and analysis
+- Code formatting and consistency
+
 ## [0.1.5] - 2024-12-14
 
 ### Added
@@ -68,6 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restructured project to use src/ directory layout
 - Updated package metadata and documentation
 
+[0.1.6]: https://github.com/mikewcasale/repominify/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/mikewcasale/repominify/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/mikewcasale/repominify/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/mikewcasale/repominify/compare/v0.1.2...v0.1.3

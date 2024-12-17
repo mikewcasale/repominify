@@ -1,25 +1,6 @@
 """Command-line interface for repo-minify.
 
 This module provides the main entry point for the repo-minify command-line tool.
-
-Author: Mike Casale
-Email: mike@casale.xyz
-GitHub: https://github.com/mikewcasale
-
-Error Handling:
-    - Dependency errors are reported with clear instructions
-    - File access errors include path information
-    - Graph building errors show detailed context
-    - All errors are logged with debug info when --debug is enabled
-
-Performance:
-    - Memory usage scales with input file size
-    - Progress feedback for long operations
-    - Graceful handling of large files
-
-Version Compatibility:
-    - Python 3.7+: Full support
-    - Type hints: Required for static analysis
 """
 
 from __future__ import annotations
@@ -28,23 +9,22 @@ import argparse
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import NoReturn, Optional, Final
+from typing import NoReturn, Optional
 
-from .core.graph import CodeGraphBuilder
-from .utils.logging import configure_logging, get_logger
-from .utils.dependency_checker import ensure_dependencies
-from .core.types import GraphBuildError, FileParseError, ValidationError
+from .graph import CodeGraphBuilder
+from .logging import configure_logging, get_logger
+from .dependencies import ensure_dependencies
+from .exceptions import GraphBuildError, FileParseError, ValidationError
+from .constants import (
+    EXIT_SUCCESS,
+    EXIT_GENERAL_ERROR,
+    EXIT_FILE_NOT_FOUND,
+    EXIT_PERMISSION_ERROR,
+    EXIT_PARSE_ERROR,
+    EXIT_GRAPH_ERROR,
+)
 
-# Configure logging
 logger = get_logger(__name__)
-
-# Exit codes
-EXIT_SUCCESS: Final[int] = 0
-EXIT_GENERAL_ERROR: Final[int] = 1
-EXIT_FILE_NOT_FOUND: Final[int] = 2
-EXIT_PERMISSION_ERROR: Final[int] = 3
-EXIT_PARSE_ERROR: Final[int] = 4
-EXIT_GRAPH_ERROR: Final[int] = 5
 
 
 @dataclass
@@ -56,18 +36,29 @@ class CliOptions:
         output_dir: Directory for analysis output files
         debug: Whether to enable debug logging
 
-    Example:
+    Raises:
+        ValueError: If input_file or output_dir is empty
+
+    Examples::
         >>> opts = CliOptions(Path("input.txt"), Path("output"), debug=True)
-        >>> print(opts.input_file)
-        input.txt
+        >>> str(opts.input_file)
+        'input.txt'
     """
 
-    # Required fields
     input_file: Path
     output_dir: Path
-
-    # Optional fields with defaults
     debug: bool = False
+
+    def __post_init__(self) -> None:
+        """Validate CLI options.
+
+        Raises:
+            ValueError: If input_file or output_dir is empty
+        """
+        if not str(self.input_file).strip():
+            raise ValueError("Input file path cannot be empty")
+        if not str(self.output_dir).strip():
+            raise ValueError("Output directory path cannot be empty")
 
 
 def parse_args() -> CliOptions:
@@ -76,13 +67,15 @@ def parse_args() -> CliOptions:
     Returns:
         CliOptions containing validated arguments
 
-    Example:
-        >>> args = parse_args()
-        >>> print(f"Processing {args.input_file}")
-        Processing repomix-output.txt
+    Raises:
+        SystemExit: If invalid arguments are provided
 
-    Note:
-        Uses argparse's built-in help and error handling
+    Examples::
+        >>> import sys
+        >>> sys.argv = ["repo-minify", "input.txt", "-o", "output"]
+        >>> args = parse_args()
+        >>> str(args.input_file)
+        'input.txt'
     """
     parser = argparse.ArgumentParser(
         description="Analyze and minify code repository structure using Repomix.",
@@ -122,15 +115,15 @@ def handle_error(error: Exception, debug: bool) -> NoReturn:
         error: The exception to handle
         debug: Whether debug mode is enabled
 
-    Note:
-        Always exits the program with an appropriate status code
+    Raises:
+        Exception: Re-raises the original error if in debug mode
 
-    Exit Codes:
-        1: General error
-        2: File not found
-        3: Permission denied
-        4: Parse error
-        5: Graph build error
+    Examples::
+        >>> try:
+        ...     raise FileNotFoundError("test.txt")
+        ... except Exception as e:
+        ...     handle_error(e, debug=False)
+        Error: File not found: test.txt
     """
     if isinstance(error, FileNotFoundError):
         print(f"Error: File not found: {error.filename}", file=sys.stderr)
@@ -157,16 +150,15 @@ def main() -> int:
     Returns:
         Exit code (0 for success, non-zero for error)
 
-    Exit Codes:
-        0: Success
-        1: General error
-        2: File not found
-        3: Permission denied
-        4: Parse error
-        5: Graph build error
+    Raises:
+        SystemExit: With appropriate exit code on error
+        Exception: Any unhandled exceptions in debug mode
 
-    Example:
-        >>> sys.exit(main())  # Run the CLI
+    Examples::
+        >>> import sys
+        >>> sys.argv = ["repo-minify", "--help"]
+        >>> main()  # doctest: +SKIP
+        0
     """
     try:
         # Parse arguments

@@ -1,17 +1,13 @@
 """Logging configuration for repo-minify.
 
 This module provides consistent logging configuration across the package.
-
-Example:
-    >>> from repo_minify.utils.logging import configure_logging
-    >>> configure_logging(debug=True)
-    >>> logger = get_logger(__name__)
-    >>> logger.debug("Debug message")
 """
 
 import logging
 import sys
 from typing import Optional
+
+from .types import LogLevel
 
 
 def configure_logging(debug: bool = False, log_file: Optional[str] = None) -> None:
@@ -21,9 +17,15 @@ def configure_logging(debug: bool = False, log_file: Optional[str] = None) -> No
         debug: Enable debug level logging
         log_file: Optional file path for logging output
 
-    Note:
-        - Debug mode includes performance metrics and detailed tracing
-        - Log file will contain all messages regardless of debug setting
+    Raises:
+        OSError: If log file cannot be created or written to
+        ValueError: If log file path is invalid
+
+    Examples::
+        >>> configure_logging(debug=True)
+        >>> logger = get_logger(__name__)
+        >>> logger.debug("Debug message")
+        DEBUG: Debug message
     """
     root_logger = logging.getLogger("repo_minify")
     root_logger.setLevel(logging.DEBUG if debug else logging.INFO)
@@ -56,6 +58,13 @@ def get_logger(name: str) -> logging.Logger:
 
     Returns:
         Configured logger instance
+
+    Examples::
+        >>> logger = get_logger(__name__)
+        >>> isinstance(logger, logging.Logger)
+        True
+        >>> logger.name.startswith('repo_minify.')
+        True
     """
     return logging.getLogger(f"repo_minify.{name}")
 

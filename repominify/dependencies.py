@@ -2,21 +2,6 @@
 
 This module handles the checking and installation of required system dependencies
 for repo-minify to function properly.
-
-Version Compatibility:
-    - Python 3.7+: Full support
-    - Python 3.6: Not supported (uses dataclasses)
-    - Node.js 12+: Required for Repomix
-    - npm 6+: Required for package installation
-
-Performance Considerations:
-    - Network I/O: Required for npm installation
-    - Disk I/O: Required for package installation
-    - Command execution: Blocking operations
-
-Note:
-    All functions return tuples of (success: bool, message: str) for consistent
-    error handling and user feedback.
 """
 
 from __future__ import annotations
@@ -26,61 +11,13 @@ import shutil
 import subprocess
 import sys
 import time
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Tuple, Optional, Dict, Union, List
+from typing import Dict, Union, List, Optional, Tuple
 
-# Configure logging
+from .exceptions import DependencyError, CommandExecutionError, InstallationError
+from .types import DependencyVersion, CommandResult, ProcessOutput, VersionInfo
+
 logger = logging.getLogger(__name__)
-
-# Type aliases for clarity
-CommandResult = Tuple[bool, str]
-ProcessOutput = Union[str, bytes]
-VersionInfo = Dict[str, str]
-
-
-class DependencyError(Exception):
-    """Base exception for dependency-related errors."""
-
-    pass
-
-
-class CommandExecutionError(DependencyError):
-    """Raised when a system command fails."""
-
-    pass
-
-
-class InstallationError(DependencyError):
-    """Raised when package installation fails."""
-
-    pass
-
-
-@dataclass
-class DependencyVersion:
-    """Container for dependency version information.
-
-    Attributes:
-        name: Name of the dependency
-        version: Version string
-        is_installed: Whether the dependency is installed
-        install_time: Installation timestamp (if installed)
-    """
-
-    name: str
-    version: str
-    is_installed: bool = False
-    install_time: Optional[float] = field(default=None)
-    install_path: Optional[str] = field(default=None)
-
-    def __str__(self) -> str:
-        return f"{self.name} {self.version}"
-
-    def __post_init__(self) -> None:
-        """Validate version string format."""
-        if not self.version.strip():
-            raise ValueError("Version string cannot be empty")
 
 
 class DependencyManager:
@@ -91,37 +28,41 @@ class DependencyManager:
 
     Attributes:
         debug: Whether debug mode is enabled
-        stats: Runtime statistics for monitoring
-
-    Performance:
-        - Network operations are performed only when necessary
-        - Command execution is optimized for response time
-        - Installation state is cached
+        stats: Runtime statistics for monitoring installations
+        _version_cache: Cache of dependency version information
     """
+
+    debug: bool
+    stats: Dict[str, Union[int, float, str]]
+    _version_cache: Dict[str, DependencyVersion]
 
     def __init__(self, debug: bool = False) -> None:
         """Initialize dependency manager.
 
         Args:
-            debug: Enable debug logging and performance tracking
+            debug: Enable debug logging and version tracking
+
+        Examples::
+            >>> manager = DependencyManager(debug=True)
+            >>> manager.stats["commands_executed"]
+            0
         """
         self.debug = debug
         if debug:
             logging.basicConfig(level=logging.DEBUG)
 
-        self.stats: Dict[str, Union[int, float, str]] = {
+        self.stats = {
             "commands_executed": 0,
             "install_attempts": 0,
             "total_install_time_ms": 0,
             "last_check_time": 0,
         }
 
-        # Cache for version checks
-        self._version_cache: Dict[str, DependencyVersion] = {}
+        self._version_cache = {}
 
     def _run_command(
         self, cmd: List[str], capture_stderr: bool = True, timeout: Optional[int] = 30
-    ) -> subprocess.CompletedProcess:
+    ) -> subprocess.CompletedProcess:  # sourcery skip: extract-method
         """Execute a system command and return the result.
 
         Args:
@@ -135,6 +76,12 @@ class DependencyManager:
         Raises:
             CommandExecutionError: If command execution fails
             subprocess.TimeoutExpired: If command exceeds timeout
+
+        Examples::
+            >>> manager = DependencyManager()
+            >>> result = manager._run_command(["echo", "test"])
+            >>> result.returncode
+            0
         """
         start_time = time.time()
 
@@ -154,24 +101,32 @@ class DependencyManager:
             raise
         except Exception as e:
             logger.error(f"Command failed: {e}")
-            raise CommandExecutionError(f"Failed to execute {cmd[0]}: {str(e)}")
+            raise CommandExecutionError(f"Failed to execute {cmd[0]}: {str(e)}") from e
 
-    def check_node_npm(self) -> CommandResult:
+    def check_node_npm(self) -> CommandResult:  # sourcery skip: extract-method
         """Check if Node.js and npm are installed.
 
         Returns:
             Tuple of (success, message) indicating installation status
 
-        Performance:
-            - Results are cached for 60 seconds
-            - Commands are executed with 5s timeout
+        Raises:
+            FileNotFoundError: If Node.js or npm executables are not found
+            CommandExecutionError: If version check commands fail
+            subprocess.TimeoutExpired: If version checks timeout
+
+        Examples::
+            >>> manager = DependencyManager()
+            >>> success, msg = manager.check_node_npm()
+            >>> success
+            True
         """
         current_time = time.time()
-        if (current_time - self.stats["last_check_time"]) < 60:
-            if "node" in self._version_cache and "npm" in self._version_cache:
-                node = self._version_cache["node"]
-                npm = self._version_cache["npm"]
-                return True, f"{node} and {npm} found."
+        if (current_time - self.stats["last_check_time"]) < 60 and (
+            "node" in self._version_cache and "npm" in self._version_cache
+        ):
+            node = self._version_cache["node"]
+            npm = self._version_cache["npm"]
+            return True, f"{node} and {npm} found."
 
         try:
             # Check node version
@@ -214,15 +169,23 @@ class DependencyManager:
         Returns:
             Tuple of (success, message) indicating installation status
 
-        Performance:
-            - Results are cached for 60 seconds
-            - Commands are executed with 5s timeout
+        Raises:
+            FileNotFoundError: If Repomix executable is not found
+            CommandExecutionError: If version check command fails
+            subprocess.TimeoutExpired: If version check times out
+
+        Examples::
+            >>> manager = DependencyManager()
+            >>> success, msg = manager.check_repomix()
+            >>> isinstance(success, bool)
+            True
         """
         current_time = time.time()
-        if (current_time - self.stats["last_check_time"]) < 60:
-            if "repomix" in self._version_cache:
-                version = self._version_cache["repomix"]
-                return True, f"{version} found."
+        if (
+            current_time - self.stats["last_check_time"]
+        ) < 60 and "repomix" in self._version_cache:
+            version = self._version_cache["repomix"]
+            return True, f"{version} found."
 
         try:
             result = self._run_command(["repomix", "--version"], timeout=5)
@@ -251,10 +214,15 @@ class DependencyManager:
         Returns:
             Tuple of (success, message) indicating installation result
 
-        Performance:
-            - Network-dependent operation
-            - May take several seconds to complete
-            - Progress is logged for long operations
+        Raises:
+            CommandExecutionError: If npm install command fails
+            subprocess.TimeoutExpired: If installation times out
+
+        Examples::
+            >>> manager = DependencyManager()
+            >>> success, msg = manager.install_repomix()
+            >>> isinstance(success, bool)
+            True
         """
         start_time = time.time()
         self.stats["install_attempts"] += 1
@@ -285,14 +253,18 @@ def ensure_dependencies(debug: bool = False) -> bool:
     attempting to install Repomix if it's not found.
 
     Args:
-        debug: Enable debug logging and performance tracking
+        debug: Enable debug logging and version tracking
 
     Returns:
-        bool: True if all dependencies are satisfied, False otherwise
+        True if all dependencies are satisfied, False otherwise
 
-    Note:
-        Error messages are printed to stderr for user feedback
-        Performance statistics are logged in debug mode
+    Raises:
+        CommandExecutionError: If dependency checks or installation fails
+
+    Examples::
+        >>> success = ensure_dependencies(debug=True)
+        >>> isinstance(success, bool)
+        True
     """
     manager = DependencyManager(debug=debug)
 

@@ -1,21 +1,18 @@
 """Parser for Repomix output files.
 
 This module handles parsing of Repomix output files into structured data.
-
-Performance Considerations:
-    - Memory: O(N) where N is file size
-    - Time: O(L) where L is number of lines
-    - Large files are read in chunks to manage memory usage
 """
 
 from __future__ import annotations
 
+import logging
 import re
 from pathlib import Path
-from typing import List, Set, Tuple, Optional
+from typing import List, Set, Tuple, Optional, Dict, Any
 
-from ..utils.logging import get_logger
-from .types import FileEntry, FileParseError
+from .logging import get_logger
+from .types import FileEntry
+from .exceptions import FileParseError
 
 logger = get_logger(__name__)
 
@@ -27,11 +24,19 @@ class RepomixParser:
     structure information.
 
     Attributes:
-        stats: Runtime statistics for performance monitoring
+        stats: Runtime statistics tracking parsed files and content
     """
 
+    stats: Dict[str, int]
+
     def __init__(self) -> None:
-        """Initialize parser with performance tracking."""
+        """Initialize parser with statistics tracking.
+
+        Examples::
+            >>> parser = RepomixParser()
+            >>> parser.stats["files_processed"]
+            0
+        """
         self.stats = {
             "files_processed": 0,
             "total_lines": 0,
@@ -50,18 +55,26 @@ class RepomixParser:
 
         Raises:
             FileNotFoundError: If the input file doesn't exist
-            FileParseError: If the file format is invalid
+            FileParseError: If the file format is invalid or no entries found
             UnicodeDecodeError: If file encoding is not UTF-8
+
+        Examples::
+            >>> parser = RepomixParser()
+            >>> entries = parser.parse_file("output.txt")
+            >>> len(entries)
+            3
         """
         logger.debug(f"Parsing Repomix file: {file_path}")
 
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Repomix output file not found: {file_path}")
+        except FileNotFoundError as e:
+            raise FileNotFoundError(
+                f"Repomix output file not found: {file_path}"
+            ) from e
         except UnicodeDecodeError as e:
-            raise FileParseError(f"Invalid file encoding: {e}")
+            raise FileParseError(f"Invalid file encoding: {e}") from e
 
         file_entries: List[FileEntry] = []
         current_file: Optional[str] = None
@@ -99,7 +112,7 @@ class RepomixParser:
                 self.stats["total_size"] += entry.size
 
         except Exception as e:
-            raise FileParseError(f"Failed to parse Repomix file: {e}")
+            raise FileParseError(f"Failed to parse Repomix file: {e}") from e
 
         if not file_entries:
             raise FileParseError("No valid file entries found in Repomix output")
@@ -115,6 +128,12 @@ class RepomixParser:
 
         Returns:
             Set of imported module names
+
+        Examples::
+            >>> parser = RepomixParser()
+            >>> imports = parser.analyze_imports("import os\\nfrom typing import List")
+            >>> sorted(list(imports))
+            ['os', 'typing.List']
         """
         imports: Set[str] = set()
         import_pattern = r"^(?:from\s+(\S+)\s+)?import\s+(.+)$"
@@ -144,6 +163,16 @@ class RepomixParser:
 
         Returns:
             Tuple of (class names, function names)
+
+        Examples::
+            >>> parser = RepomixParser()
+            >>> classes, funcs = parser.extract_classes_and_functions(
+            ...     "class MyClass:\\n    def my_func():\\n        pass"
+            ... )
+            >>> classes
+            ['MyClass']
+            >>> funcs
+            ['my_func']
         """
         classes: List[str] = []
         functions: List[str] = []
@@ -154,11 +183,11 @@ class RepomixParser:
         for line in content.split("\n"):
             class_match = re.match(class_pattern, line)
             if class_match:
-                classes.append(class_match.group(1).strip())
+                classes.append(class_match[1].strip())
                 continue
 
             func_match = re.match(function_pattern, line)
             if func_match:
-                functions.append(func_match.group(1).strip())
+                functions.append(func_match[1].strip())
 
         return classes, functions
