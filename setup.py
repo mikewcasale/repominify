@@ -17,7 +17,7 @@ def get_version():
         pass
 
     # Fallback to hardcoded version if file not found
-    return "0.1.5"
+    return "0.1.7"
 
 
 setup(
