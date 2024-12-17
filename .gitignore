@@ -198,3 +198,6 @@ release_notes.md
 /fresh_test
 /repo_minify_output
 /test_env
+bcb_results/*
+./bcb_results
+/benchmark_results
